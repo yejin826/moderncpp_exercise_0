@@ -22,14 +22,11 @@ public:
     }
 
     // 이동 생성자
-    MyVector(MyVector&& a) : capacity_(move(a.capacity_)), size_(move(a.size_)) {
-        data_ = new T[capacity_];
-
-        for (int i = 0; i < size_; i++) {
-            data_[i] = move(a[i]);
-        }
+    MyVector(MyVector&& a) noexcept : data_(a.data_), capacity_(a.capacity_), size_(a.size_) {
+        delete a;
     }
-
+    
+    
     // 이동 대입 연산자
     MyVector& operator=(const MyVector& a) noexcept {
         data_ = move(a.data_);
@@ -46,10 +43,10 @@ public:
 
         return *this;
     }
-
-    ~MyVector() {
-        delete[] data_;
-    }
+    
+   // ~MyVector() {
+   //    delete[] data_;
+   // }
 
     void push_back(const T& n) {
         if (capacity_ <= size_) {
@@ -114,7 +111,9 @@ int main()
         //cout << v.size() << endl;
         //cout << v[3] << endl;
 
-        MyVector<int> v2 = std::move(v);
+        MyVector<int> v2 = move(v);
+        cout << v2.size() << endl;
+        cout << v.size() << endl;
         // v2.size() == 5 
         // v.size() == 0
     } // v 소멸
